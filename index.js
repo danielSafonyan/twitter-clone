@@ -10,11 +10,13 @@ document.addEventListener('click', function(e){
     }
     else if(e.target.dataset.reply){
         handleReplyClick(e.target.dataset.reply)
+        return
     }
     else if(e.target.id === 'tweet-btn'){
         handleTweetBtnClick()
     }
     render()
+
 })
  
 function handleLikeClick(tweetId){ 
@@ -42,9 +44,7 @@ function handleRetweetClick(tweetId){
 }
 
 function handleReplyClick(replyId){
-    const elem = document.getElementById(`replies-${replyId}`)
-    elem.classList.toggle('hidden')
-    console.log(elem.classList.contains('hidden'))
+    document.getElementById(`replies-${replyId}`).classList.toggle('hidden')
 }
 
 function handleTweetBtnClick(){
