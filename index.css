@@ -44,6 +44,19 @@ header{
     display: flex;
     align-items: flex-start;
     gap: 10px;
+    position: relative;
+
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.warning {
+
+    position: absolute; 
+    bottom:0; 
+    right:0; 
+    
+    color:red;"
 }
 
 /* textareas + btn */

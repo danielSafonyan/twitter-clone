@@ -1,45 +1,44 @@
 import { tweetsData } from './data.js'
 import { v4 as uuidv4 } from 'https://jspm.dev/uuid';
 
+document.querySelector('textarea').addEventListener('keypress', function (e) {
+    if (e.key === 'Enter') {
+        e.preventDefault()
+      handleTweetBtnClick()
+      render()
+    }
+});
+
 document.addEventListener('click', function(e){
-    if(e.target.dataset.like){
-       handleLikeClick(e.target.dataset.like) 
+    const dataset = e.target.dataset
+
+    if(dataset.like){
+       handleLikeClick(dataset.like) 
     }
-    else if(e.target.dataset.retweet){
-        handleRetweetClick(e.target.dataset.retweet)
+    else if(dataset.retweet){
+        handleRetweetClick(dataset.retweet)
     }
-    else if(e.target.dataset.reply){
-        handleReplyClick(e.target.dataset.reply)
+    else if(dataset.reply){
+        handleReplyClick(dataset.reply)
         return
     }
     else if(e.target.id === 'tweet-btn'){
         handleTweetBtnClick()
     }
-    render()
 
+    render()
 })
  
 function handleLikeClick(tweetId){ 
     const targetTweetObj = tweetsData.find(tweet => tweet.uuid === tweetId)
-
-    if (targetTweetObj.isLiked){
-        targetTweetObj.likes--
-    }
-    else{
-        targetTweetObj.likes++ 
-    }
+    targetTweetObj.isLiked ? targetTweetObj.likes-- : targetTweetObj.likes++
     targetTweetObj.isLiked = !targetTweetObj.isLiked
 }
 
 function handleRetweetClick(tweetId){
     const targetTweetObj = tweetsData.find(tweet => tweet.uuid === tweetId)
-    
-    if(targetTweetObj.isRetweeted){
-        targetTweetObj.retweets--
-    }
-    else{
-        targetTweetObj.retweets++
-    }
+    targetTweetObj.isRetweeted ? targetTweetObj.retweets-- : 
+    targetTweetObj.retweets++
     targetTweetObj.isRetweeted = !targetTweetObj.isRetweeted
 }
 
@@ -48,11 +47,25 @@ function handleReplyClick(replyId){
 }
 
 function handleTweetBtnClick(){
+    const tweetWarningInputArea = document.querySelector('.warning')
+    tweetWarningInputArea.textContent = ""
     const tweetInput = document.getElementById('tweet-input')
+    const isShort = tweetInput.value.length < 5;
+    const isDuplicate = tweetsData.find(el => el.tweetText === tweetInput.value)
 
+    
     // fix
-    if(tweetInput.value){
-        tweetsData.unshift({
+    if (isShort){
+        tweetWarningInputArea.textContent = "Try a longer tweet."
+        return
+    }
+
+    if (isDuplicate){
+        tweetWarningInputArea.textContent = "This tweet already exists."
+        return
+    }
+
+    tweetsData.unshift({
             handle: `@Scrimba`,
             profilePic: `images/scrimbalogo.png`,
             likes: 0,
@@ -64,8 +77,6 @@ function handleTweetBtnClick(){
             uuid: uuidv4()
         })
     tweetInput.value = ''
-    }
-
 }
 
 function getFeedHtml(){
